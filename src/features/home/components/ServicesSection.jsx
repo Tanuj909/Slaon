@@ -118,159 +118,23 @@ const ServicesSection = () => {
   const translateX = `calc(-${currentIndex * (100 / visibleCards)}% + ${isDragging ? dragOffset : 0}px)`;
 
   return (
-    <section style={{
-      padding: '96px 24px',
-      maxWidth: '1300px',
-      margin: '0 auto',
-      fontFamily: "'Georgia', serif",
-    }}>
-      <style>{`
-        .service-card {
-          flex: 0 0 calc(25% - 18px);
-          height: 480px;
-          border-radius: 20px;
-          overflow: hidden;
-          position: relative;
-          cursor: pointer;
-          transition: transform 0.4s ease, box-shadow 0.4s ease;
-          user-select: none;
-        }
-        .service-card:hover {
-          box-shadow: 0 32px 60px rgba(80, 30, 60, 0.35);
-        }
-        .service-card img {
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          transition: transform 0.7s ease;
-        }
-        .service-card:hover img {
-          transform: scale(1.1);
-        }
-        .card-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(to top, rgba(60, 20, 50, 0.92) 0%, rgba(60, 20, 50, 0.15) 55%, transparent 100%);
-          opacity: 0.85;
-          transition: opacity 0.3s ease;
-        }
-        .service-card:hover .card-overlay {
-          opacity: 0.95;
-        }
-        .card-content {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          padding: 28px;
-          width: 100%;
-        }
-        .card-title {
-          color: #fff8f2;
-          font-size: 1.35rem;
-          font-weight: 700;
-          margin-bottom: 8px;
-          transition: transform 0.3s ease;
-        }
-        .service-card:hover .card-title {
-          transform: translateY(-6px);
-        }
-        .card-desc {
-          color: rgba(255, 248, 242, 0.88);
-          font-size: 0.85rem;
-          line-height: 1.5;
-          margin-bottom: 16px;
-          opacity: 0;
-          transform: translateY(12px);
-          transition: opacity 0.3s ease 0.05s, transform 0.3s ease 0.05s;
-        }
-        .service-card:hover .card-desc {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        .card-btn {
-          background: transparent;
-          border: 1.5px solid rgba(255, 248, 242, 0.7);
-          color: #fff8f2;
-          padding: 8px 22px;
-          border-radius: 50px;
-          font-size: 0.8rem;
-          font-weight: 600;
-          cursor: pointer;
-          opacity: 0;
-          transform: translateY(12px);
-          transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s, background 0.2s, color 0.2s;
-          letter-spacing: 0.05em;
-        }
-        .service-card:hover .card-btn {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        .card-btn:hover {
-          background: #fff8f2;
-          color: #3c1432;
-        }
-        .nav-btn {
-          width: 48px;
-          height: 48px;
-          border-radius: 50%;
-          border: 1.5px solid rgba(100, 40, 80, 0.4);
-          background: #fff;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: background 0.2s, border-color 0.2s, transform 0.2s;
-          box-shadow: 0 4px 16px rgba(100,40,80,0.12);
-        }
-        .nav-btn:hover:not(:disabled) {
-          background: #3c1432;
-          border-color: #3c1432;
-          transform: scale(1.08);
-        }
-        .nav-btn:disabled {
-          opacity: 0.3;
-          cursor: not-allowed;
-        }
-        .nav-btn svg {
-          transition: stroke 0.2s;
-        }
-        .nav-btn:hover:not(:disabled) svg {
-          stroke: #fff;
-        }
-        .dot {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          background: rgba(100, 40, 80, 0.25);
-          cursor: pointer;
-          transition: background 0.25s, transform 0.25s, width 0.25s;
-          border: none;
-        }
-        .dot.active {
-          background: #3c1432;
-          width: 28px;
-          border-radius: 4px;
-        }
-      `}</style>
-
+    <section className="py-24 px-6 max-w-[1300px] mx-auto font-['Georgia',serif]">
       {/* Header */}
-      <div style={{ textAlign: 'center', marginBottom: '56px' }}>
-        <p style={{ color: '#9b5876', fontSize: '0.8rem', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px', fontFamily: "'Georgia', serif" }}>
+      <div className="text-center mb-14">
+        <p className="text-[#9b5876] text-[0.8rem] tracking-[0.2em] uppercase mb-3 font-['Georgia',serif]">
           Crafted With Care
         </p>
-        <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: '800', color: '#3c1432', margin: 0, lineHeight: 1.15, fontFamily: "'Georgia', serif" }}>
+        <h2 className="text-[clamp(2rem,4vw,3rem)] font-extrabold text-[#3c1432] m-0 leading-[1.15] font-['Georgia',serif]">
           Our Premium Services
         </h2>
-        <div style={{ width: '64px', height: '3px', background: 'linear-gradient(90deg, #9b5876, #3c1432)', margin: '16px auto 0', borderRadius: '2px' }} />
+        <div className="w-16 h-[3px] bg-gradient-to-r from-[#9b5876] to-[#3c1432] mx-auto mt-4 rounded-sm" />
       </div>
 
       {/* Carousel */}
-      <div style={{ position: 'relative' }}>
+      <div className="relative">
         {/* Track wrapper */}
         <div
-          style={{ overflow: 'hidden', borderRadius: '4px', cursor: isDragging ? 'grabbing' : 'grab', paddingRight: '24px' }}
+          className={`overflow-hidden rounded-[4px] pr-6 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
           onMouseDown={onMouseDown}
           onMouseMove={onMouseMove}
           onMouseUp={onMouseUp}
@@ -281,22 +145,34 @@ const ServicesSection = () => {
         >
           <div
             ref={trackRef}
+            className="flex gap-6 will-change-transform"
             style={{
-              display: 'flex',
-              gap: '24px',
               transition: isDragging ? 'none' : 'transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
               transform: `translateX(${translateX})`,
-              willChange: 'transform',
             }}
           >
             {services.map((service, index) => (
-              <div key={index} className="service-card">
-                <img src={service.image} alt={service.title} draggable={false} />
-                <div className="card-overlay" />
-                <div className="card-content">
-                  <h3 className="card-title">{service.title}</h3>
-                  <p className="card-desc">{service.description}</p>
-                  <button className="card-btn">Explore</button>
+              <div
+                key={index}
+                className="relative h-[480px] rounded-[20px] overflow-hidden shrink-0 w-[calc(25%-18px)] group shadow-none hover:shadow-[0_32px_60px_rgba(80,30,60,0.35)] transition-all duration-400 ease-in-out select-none"
+              >
+                <img
+                  src={service.image}
+                  alt={service.title}
+                  draggable={false}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#3c1432]/90 via-[#3c1432]/15 to-transparent opacity-85 transition-opacity duration-300 group-hover:opacity-95" />
+                <div className="absolute bottom-0 left-0 p-7 w-full">
+                  <h3 className="text-[#fff8f2] text-[1.35rem] font-bold mb-2 transition-transform duration-300 group-hover:-translate-y-1.5">
+                    {service.title}
+                  </h3>
+                  <p className="text-[#fff8f2]/90 text-[0.85rem] leading-relaxed mb-4 opacity-0 translate-y-3 transition-all duration-300 delay-50 group-hover:opacity-100 group-hover:translate-y-0">
+                    {service.description}
+                  </p>
+                  <button className="bg-transparent border-[1.5px] border-[#fff8f2]/70 text-[#fff8f2] px-[22px] py-2 rounded-full text-[0.8rem] font-semibold opacity-0 translate-y-3 transition-all duration-300 delay-100 tracking-wider hover:bg-[#fff8f2] hover:text-[#3c1432] group-hover:opacity-100 group-hover:translate-y-0">
+                    Explore
+                  </button>
                 </div>
               </div>
             ))}
@@ -305,33 +181,31 @@ const ServicesSection = () => {
 
         {/* Navigation Arrows */}
         <button
-          className="nav-btn"
+          className="w-12 h-12 rounded-full border-[1.5px] border-[#642850]/40 bg-white flex items-center justify-center transition-all duration-200 shadow-[0_4px_16px_rgba(100,40,80,0.12)] hover:bg-[#3c1432] hover:border-[#3c1432] hover:scale-110 disabled:opacity-30 disabled:cursor-not-allowed group absolute top-1/2 -translate-y-1/2 -left-6"
           onClick={() => { prev(); resetAutoPlay(); }}
           disabled={currentIndex === 0}
-          style={{ position: 'absolute', left: '-24px', top: '50%', transform: 'translateY(-50%)' }}
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3c1432" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3c1432" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="transition-colors duration-200 group-hover:stroke-white">
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
         <button
-          className="nav-btn"
+          className="w-12 h-12 rounded-full border-[1.5px] border-[#642850]/40 bg-white flex items-center justify-center transition-all duration-200 shadow-[0_4px_16px_rgba(100,40,80,0.12)] hover:bg-[#3c1432] hover:border-[#3c1432] hover:scale-110 disabled:opacity-30 disabled:cursor-not-allowed group absolute top-1/2 -translate-y-1/2 -right-6"
           onClick={() => { next(); resetAutoPlay(); }}
           disabled={currentIndex === maxIndex}
-          style={{ position: 'absolute', right: '-24px', top: '50%', transform: 'translateY(-50%)' }}
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3c1432" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3c1432" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="transition-colors duration-200 group-hover:stroke-white">
             <polyline points="9 18 15 12 9 6" />
           </svg>
         </button>
       </div>
 
       {/* Dots
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', marginTop: '36px' }}>
+      <div className="flex justify-center items-center gap-2 mt-9">
         {Array.from({ length: maxIndex + 1 }).map((_, i) => (
           <button
             key={i}
-            className={`dot ${i === currentIndex ? 'active' : ''}`}
+            className={`cursor-pointer transition-[background,transform,width] duration-250 border-none ${i === currentIndex ? 'bg-[#3c1432] w-7 h-2 rounded' : 'w-2 h-2 rounded-full bg-[#642850]/25'}`}
             onClick={() => { goTo(i); resetAutoPlay(); }}
           />
         ))}

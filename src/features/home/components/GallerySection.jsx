@@ -127,7 +127,7 @@ const GallerySection = () => {
               <p className="text-creamy/90 text-xs mb-3 font-display">
                 {item.description}
               </p>
-              <button className="bg-primary text-creamy px-4 py-1.5 rounded-full text-xs font-bold font-display hover:bg-white hover:text-primary transition-colors">
+              <button className="bg-primary text-creamy px-4 py-1.5 rounded-full text-xs font-bold font-display hover:bg-white hover:text-primary transition-colors mt-3">
                 View Details
               </button>
             </div>

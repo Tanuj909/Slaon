@@ -2,7 +2,7 @@ import React from 'react';
 
 const AboutSection = () => {
   return (
-    <section className="py-24 bg-plum/5">
+    <section id="about" className="py-24 bg-plum/5">
       <div className="max-w-[1200px] mx-auto px-6 space-y-32">
         {/* Experience Part */}
         <div className="flex flex-col lg:flex-row items-center gap-16">

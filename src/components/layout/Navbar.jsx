@@ -18,7 +18,11 @@ export default function Navbar() {
             {['Home', 'Salons', 'About', 'Contact'].map((item) => (
               <Link
                 key={item}
-                href={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
+                href={
+                  item === 'Home' ? '/' :
+                    item === 'About' ? '/#about' :
+                      `/${item.toLowerCase()}`
+                }
                 className="text-sm font-semibold hover:text-terracotta transition-colors text-earthy-brown font-display"
               >
                 {item}
@@ -51,7 +55,11 @@ export default function Navbar() {
           {['Home', 'Salons', 'About', 'Contact'].map((item) => (
             <Link
               key={item}
-              href={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
+              href={
+                item === 'Home' ? '/' :
+                  item === 'About' ? '/#about' :
+                    `/${item.toLowerCase()}`
+              }
               className="text-earthy-brown font-semibold hover:text-terracotta transition-colors px-4 py-2"
               onClick={() => setIsMenuOpen(false)}
             >

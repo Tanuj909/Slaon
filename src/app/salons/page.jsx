@@ -122,11 +122,11 @@ const StarIcon = ({ filled }) => (
 );
 
 const badgeColors = {
-  "Top Rated":    { bg: "rgba(155,88,118,0.12)", color: "#7a2860", border: "rgba(155,88,118,0.2)" },
-  "Editor's Pick":{ bg: "rgba(196,149,106,0.12)", color: "#a0622a", border: "rgba(196,149,106,0.25)" },
-  "Most Booked":  { bg: "rgba(60,20,50,0.09)",   color: "#3c1432", border: "rgba(60,20,50,0.15)" },
-  "New":          { bg: "rgba(80,160,120,0.1)",   color: "#2a7a5a", border: "rgba(80,160,120,0.2)" },
-  "Luxury":       { bg: "rgba(196,149,106,0.15)", color: "#8a5020", border: "rgba(196,149,106,0.3)" },
+  "Top Rated": { bg: "rgba(155,88,118,0.12)", color: "#7a2860", border: "rgba(155,88,118,0.2)" },
+  "Editor's Pick": { bg: "rgba(196,149,106,0.12)", color: "#a0622a", border: "rgba(196,149,106,0.25)" },
+  "Most Booked": { bg: "rgba(60,20,50,0.09)", color: "#3c1432", border: "rgba(60,20,50,0.15)" },
+  "New": { bg: "rgba(80,160,120,0.1)", color: "#2a7a5a", border: "rgba(80,160,120,0.2)" },
+  "Luxury": { bg: "rgba(196,149,106,0.15)", color: "#8a5020", border: "rgba(196,149,106,0.3)" },
 };
 
 export default function SalonList() {
@@ -168,33 +168,34 @@ export default function SalonList() {
         }
       `}</style>
 
-      {/* Header */}
+      {/* Header - Fixed Alignment */}
       <div className="max-w-[1280px] mx-auto px-12 pt-16">
-        <div className="flex items-end justify-between flex-wrap gap-6 mb-9">
-          <div>
+        <div className="flex items-center justify-between flex-wrap gap-8 mb-9">
+          {/* Left side - Title and subtitle */}
+          <div className="flex-1 min-w-[300px]">
             <h1
-              className="font-bold leading-[1.1] mb-2.5 text-[#1e0a18]"
+              className="font-bold leading-[1.1] mb-2 text-[#1e0a18]"
               style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 'clamp(2rem, 4vw, 3rem)' }}
             >
-              Discover Premium<br />
-              <span className="italic text-[#7a2860]">Salons Near You</span>
+              Discover Premium
+              <span className="italic text-[#7a2860] block sm:inline sm:ml-2">Salons Near You</span>
             </h1>
             <p
-              className="text-[0.9rem] leading-[1.65] max-w-[380px]"
+              className="text-[0.9rem] leading-[1.65] max-w-[420px]"
               style={{ fontFamily: "'DM Sans', sans-serif", color: 'rgba(60,20,50,0.5)' }}
             >
               Curated spaces where craft meets care — browse and book your next salon experience.
             </p>
           </div>
 
-          {/* Search */}
-          <div className="relative max-w-[420px] w-full">
+          {/* Right side - Search bar - vertically centered with the heading */}
+          <div className="relative w-full sm:w-[380px] lg:w-[420px] self-center">
             <span
               className="absolute left-[15px] top-1/2 -translate-y-1/2 pointer-events-none"
               style={{ color: 'rgba(60,20,50,0.35)' }}
             >
               <svg width={16} height={16} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
             </span>
             <input
@@ -222,11 +223,10 @@ export default function SalonList() {
           {filters.map(f => (
             <button
               key={f}
-              className={`py-2 px-5 rounded-full border-[1.5px] text-[0.8rem] font-medium cursor-pointer transition-all duration-200 whitespace-nowrap ${
-                activeFilter === f
+              className={`py-2 px-5 rounded-full border-[1.5px] text-[0.8rem] font-medium cursor-pointer transition-all duration-200 whitespace-nowrap ${activeFilter === f
                   ? 'sl-filter-active'
                   : 'sl-filter-inactive bg-white'
-              }`}
+                }`}
               style={{
                 fontFamily: "'DM Sans', sans-serif",
                 borderColor: activeFilter === f ? 'transparent' : 'rgba(60,20,50,0.12)',
@@ -249,15 +249,15 @@ export default function SalonList() {
       </div>
 
       {/* Grid */}
-      <div className="max-w-[1280px] mx-auto px-12 pb-24 ">
-        <div className="grid grid-cols-3 gap-7 lg:grid-cols-3 sm:grid-cols-1">
+      <div className="max-w-[1280px] mx-auto px-12 pb-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
           {filtered.length === 0 ? (
             <div
               className="col-span-full text-center py-20"
               style={{ fontFamily: "'DM Sans', sans-serif", color: 'rgba(60,20,50,0.4)' }}
             >
               <svg width={40} height={40} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" className="mx-auto mb-4 opacity-30">
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
               <p className="text-base">No salons match your search.</p>
             </div>
@@ -318,7 +318,7 @@ export default function SalonList() {
                     style={{ fontFamily: "'DM Sans', sans-serif", color: 'rgba(60,20,50,0.48)' }}
                   >
                     <svg width={12} height={12} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" /><circle cx="12" cy="10" r="3" />
                     </svg>
                     {salon.location}
                   </div>
@@ -357,7 +357,7 @@ export default function SalonList() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-[5px]">
                       <div className="flex gap-0.5">
-                        {[1,2,3,4,5].map(i => <StarIcon key={i} filled={i <= Math.round(salon.rating)} />)}
+                        {[1, 2, 3, 4, 5].map(i => <StarIcon key={i} filled={i <= Math.round(salon.rating)} />)}
                       </div>
                       <span
                         className="text-[0.82rem] font-semibold text-[#1e0a18]"
