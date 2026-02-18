@@ -12,7 +12,7 @@ const AboutSection = () => {
               <img
                 alt="About our Experience"
                 className="w-full aspect-[4/3] object-cover rounded-xl shadow-2xl"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBi4-63za8-F-S2KhRZ5O6fcipdmFDBPo1PymPGW-e0gACv2VURPHW6cF4HsSAyQTbkYOq2rcEJKbA17LcR_WPdMqYrKK5YvuXC-ol-00BbgoOnYdUhX7Xu-ThU_P0lHIPaCJX9w8N6QCDV2aFjfdb0CFOsz4TMtXi4zCVvAbj4V5-gyVkSw4j1oY13drvWN7fvjQOSqwiGes8pCvWY6w-AVKi3B3ubJBT79FHJM0wFVgfa2TEClyRRYrv9RnVtxYe8QK4gkrk0Fwp5"
+                src="https://images.unsplash.com/photo-1637308596839-9487d9894028?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHNhbG9uJTIwaW1hZ2VzfGVufDB8fDB8fHww"
               />
             </div>
           </div>
@@ -46,7 +46,7 @@ const AboutSection = () => {
               <img
                 alt="Our Expertise"
                 className="w-full aspect-[4/3] object-cover rounded-xl shadow-2xl"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2ywGAPd9BD6zatNByfkZY-_jScYLg6B6qc_ylhUlHUvDRk9-XXfJbeQ2HIHtGRHVIOPB_oGxgjRIL5kpW6hwYGH5hbjZzh-lxu_yGwmuOMj2yvaHob3d7ATVA2wK_lUhpidUYzUEd9nGvt0o0oo5QClf8KNZxApLV1t3bRk1ncZtcJXLufxVbCOmSVTpYGolMJ5Yf6GdA3bggbRaSjPvcyN5S0cb42sgGN_Z3hwluYg3LlOCtd3N4vERPZr94koztcHPdFHh7LzmW"
+                src="https://images.unsplash.com/photo-1612817288484-6f916006741a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmVhdXR5JTIwUHJvZHVjdHN8ZW58MHx8MHx8fDA%3D"
               />
             </div>
           </div>
