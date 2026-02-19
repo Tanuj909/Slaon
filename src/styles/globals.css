@@ -20,7 +20,7 @@
 
 @layer utilities {
   .glass-nav {
-    background: rgba(247, 237, 226, 0.6);
+    background: rgba(247, 237, 226, 0.9);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(205, 97, 51, 0.2);

@@ -5,6 +5,7 @@ import { Scissors, Search, Menu, X } from 'lucide-react';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   return (
     <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[1200px]">
@@ -40,6 +41,41 @@ export default function Navbar() {
               type="text"
             />
           </div>
+
+          <div className="relative">
+            <button
+              onClick={() => setIsProfileOpen(!isProfileOpen)}
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-white/40 text-earthy-brown hover:bg-white/60 transition-all border border-terracotta/20"
+              aria-label="User profile"
+            >
+              <span className="material-symbols-outlined text-xl">person</span>
+            </button>
+
+            {isProfileOpen && (
+              <div className="absolute right-0 mt-3 w-48 glass-nav rounded-2xl overflow-hidden py-2 shadow-xl animate-fade-in border border-terracotta/10">
+                <Link
+                  href="/profile"
+                  className="flex items-center gap-3 px-4 py-2 text-sm font-medium text-earthy-brown hover:bg-terracotta/10 hover:text-terracotta transition-colors"
+                  onClick={() => setIsProfileOpen(false)}
+                >
+                  <span className="material-symbols-outlined text-lg">account_circle</span>
+                  Profile
+                </Link>
+                <button
+                  className="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-earthy-brown hover:bg-terracotta/10 hover:text-terracotta transition-colors"
+                  onClick={() => {
+                    setIsProfileOpen(false);
+                    // Add logout logic here later if needed
+                    console.log("Logging out...");
+                  }}
+                >
+                  <span className="material-symbols-outlined text-lg">logout</span>
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
+
           <button
             className="md:hidden p-2 text-earthy-brown"
             onClick={() => setIsMenuOpen(!isMenuOpen)}

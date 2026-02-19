@@ -156,6 +156,7 @@ export default function SalonDetails({ params }) {
         </div>
       </section>
 
+
       {/* ═══════════════════════════════════════════
           2. ABOUT / OVERVIEW
       ═══════════════════════════════════════════ */}
@@ -210,139 +211,6 @@ export default function SalonDetails({ params }) {
       </section>
 
       {/* ═══════════════════════════════════════════
-          3. LOCATION
-      ═══════════════════════════════════════════ */}
-      <section className="px-[6vw] py-14 bg-[#FDFAF6]" id="location">
-        <Reveal>
-          <span className="block text-[11px] tracking-[0.2em] uppercase text-[#C8A951] font-medium mb-2">Find Us</span>
-          <h2 className="font-[Cormorant_Garamond,Georgia,serif] font-light text-[#1C1C1C] leading-[1.15] mb-8" style={{ fontSize: "clamp(22px,3vw,36px)" }}>
-            Our Location
-          </h2>
-        </Reveal>
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-8">
-          <Reveal>
-            <div className="bg-[#FDFAF6] rounded-[14px] p-7 shadow-[0_4px_32px_rgba(28,28,28,0.08)] border border-[rgba(200,169,81,0.18)] h-full flex flex-col">
-              <div className="w-11 h-11 rounded-full bg-[#f5edce] flex items-center justify-center mb-5">
-                <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#C8A951" strokeWidth={1.8}><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z" /><circle cx="12" cy="10" r="3" /></svg>
-              </div>
-              <strong className="block text-[12px] tracking-[0.06em] uppercase text-[#7a7065] font-medium font-[Jost] mb-2">Address</strong>
-              <p className="text-[14px] leading-[1.7] text-[#1C1C1C] mb-5 flex-1">{salon.location}</p>
-              <a
-                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(salon.location)}`}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg bg-[#1C1C1C] text-[#C8A951] text-[13px] font-medium tracking-[0.07em] uppercase transition-all duration-300 hover:bg-[#2e2e2e] hover:-translate-y-0.5 hover:shadow-[0_4px_32px_rgba(28,28,28,0.08)] self-start"
-              >
-                <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M9 18l6-6-6-6" /></svg>
-                Get Directions
-              </a>
-            </div>
-          </Reveal>
-          <Reveal delay={150}>
-            <div className="rounded-[14px] overflow-hidden shadow-[0_4px_32px_rgba(28,28,28,0.08)] min-h-[240px]">
-              <iframe
-                src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14017.0!2d77.2090!3d28.6139!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s${encodeURIComponent(salon.location)}!5e0!3m2!1sen!2sin!4v1700000000000`}
-                className="w-full min-h-[240px] block border-0"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════
-          4. CONTACT
-      ═══════════════════════════════════════════ */}
-      <section className="px-[6vw] py-14" id="contact">
-        <Reveal>
-          <span className="block text-[11px] tracking-[0.2em] uppercase text-[#C8A951] font-medium mb-2">Get In Touch</span>
-          <h2 className="font-[Cormorant_Garamond,Georgia,serif] font-light text-[#1C1C1C] leading-[1.15] mb-2" style={{ fontSize: "clamp(22px,3vw,36px)" }}>Contact Us</h2>
-          <div className="w-12 h-px bg-[#C8A951] mb-8" />
-        </Reveal>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {/* Phone */}
-          <Reveal>
-            <div className="bg-[#FDFAF6] rounded-[14px] p-6 border border-[rgba(200,169,81,0.18)] shadow-[0_4px_32px_rgba(28,28,28,0.08)] flex flex-col gap-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_48px_rgba(28,28,28,0.12)]">
-              <div className="w-[52px] h-[52px] bg-[#1C1C1C] rounded-[14px] flex items-center justify-center">
-                <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#C8A951" strokeWidth={1.8}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.72 12 19.79 19.79 0 0 1 1.65 3.27a2 2 0 0 1 1.81-2.18h3a2 2 0 0 1 2 1.72 12.8 12.8 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.8 12.8 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
-              </div>
-              <div>
-                <div className="text-[11px] tracking-[0.14em] uppercase text-[#7a7065] mb-1">Phone Number</div>
-                <div className="font-[Cormorant_Garamond,Georgia,serif] font-light text-[18px] text-[#1C1C1C]">{detail.phone}</div>
-              </div>
-              <a href={`tel:${detail.phone}`} className="self-start inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[#C8A951] text-[#1C1C1C] text-[12px] font-medium tracking-[0.07em] uppercase transition-all duration-300 hover:bg-[#e0c477] hover:-translate-y-0.5">
-                Call Now
-              </a>
-            </div>
-          </Reveal>
-          {/* Email */}
-          <Reveal delay={100}>
-            <div className="bg-[#FDFAF6] rounded-[14px] p-6 border border-[rgba(200,169,81,0.18)] shadow-[0_4px_32px_rgba(28,28,28,0.08)] flex flex-col gap-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_48px_rgba(28,28,28,0.12)]">
-              <div className="w-[52px] h-[52px] bg-[#1C1C1C] rounded-[14px] flex items-center justify-center">
-                <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#C8A951" strokeWidth={1.8}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>
-              </div>
-              <div>
-                <div className="text-[11px] tracking-[0.14em] uppercase text-[#7a7065] mb-1">Email Address</div>
-                <div className="font-[Cormorant_Garamond,Georgia,serif] font-light text-[18px] text-[#1C1C1C]">{detail.email}</div>
-              </div>
-              <a href={`mailto:${detail.email}`} className="self-start inline-flex items-center gap-2 px-6 py-2.5 rounded-lg border border-[rgba(200,169,81,0.18)] text-[#1C1C1C] text-[12px] font-medium tracking-[0.07em] uppercase transition-all duration-300 hover:bg-[#f5edce] hover:border-[#C8A951]">
-                Send Email
-              </a>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════
-          5. TIMINGS — dark section
-      ═══════════════════════════════════════════ */}
-      <section className="px-[6vw] py-14 bg-[#1C1C1C]" id="hours">
-        <Reveal>
-          <span className="block text-[11px] tracking-[0.2em] uppercase text-[#C8A951] font-medium mb-2">Opening Hours</span>
-          <h2 className="font-[Cormorant_Garamond,Georgia,serif] font-light text-white leading-[1.15] mb-2" style={{ fontSize: "clamp(22px,3vw,36px)" }}>
-            We're Here For You
-          </h2>
-          <div className="w-10 h-px bg-[#C8A951] mb-3" />
-          <p className="text-white/58 text-[13.5px] max-w-[480px] leading-[1.75] mb-8">
-            Visit us any day of the week. Our team is dedicated to serving you with the finest care.
-          </p>
-        </Reveal>
-
-        <Reveal delay={100}>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-5 mb-10">
-            {detail.timings.map((t) => {
-              const isToday = t.day === today;
-              const isClosed = !t.open;
-              return (
-                <div
-                  key={t.day}
-                  className={`flex items-center justify-between rounded-[14px] px-5 py-3.5 border transition-colors ${
-                    isToday
-                      ? "bg-[rgba(200,169,81,0.12)] border-[#C8A951]"
-                      : "bg-white/5 border-white/10"
-                  } ${isClosed ? "opacity-55" : ""}`}
-                >
-                  <span className={`font-medium text-[14px] font-[Jost] ${isToday ? "text-[#C8A951]" : "text-white/85"}`}>{t.day}</span>
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-[14px] text-white/50">{isClosed ? "Closed" : `${t.open} – ${t.close}`}</span>
-                    {isToday && <span className="text-[10px] tracking-[0.1em] uppercase bg-[#C8A951] text-[#1C1C1C] px-2.5 py-1 rounded-full font-semibold">Today</span>}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div>
-            <p className="text-[12px] tracking-[0.14em] uppercase text-[#C8A951] mb-3.5">Public Holidays — Closed</p>
-            {["Diwali", "Holi", "Republic Day", "Independence Day"].map((h) => (
-              <span key={h} className="inline-block bg-white/6 border border-white/10 text-white/50 rounded-full px-4 py-1.5 text-[13px] m-1">{h}</span>
-            ))}
-          </div>
-        </Reveal>
-      </section>
-
-      {/* ═══════════════════════════════════════════
           6. SERVICES
       ═══════════════════════════════════════════ */}
       <section className="px-[6vw] py-14 bg-[#FDFAF6]" id="services">
@@ -385,6 +253,98 @@ export default function SalonDetails({ params }) {
           ))}
         </div>
       </section>
+
+      {/* ═══════════════════════════════════════════
+          3. LOCATION
+      ═══════════════════════════════════════════ */}
+      <section className="px-[6vw] py-14 bg-[#FDFAF6]" id="location">
+        <Reveal>
+          <span className="block text-[11px] tracking-[0.2em] uppercase text-[#C8A951] font-medium mb-2">Find Us</span>
+          <h2 className="font-[Cormorant_Garamond,Georgia,serif] font-light text-[#1C1C1C] leading-[1.15] mb-8" style={{ fontSize: "clamp(22px,3vw,36px)" }}>
+            Our Location
+          </h2>
+        </Reveal>
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-8">
+          <Reveal>
+            <div className="bg-[#FDFAF6] rounded-[14px] p-7 shadow-[0_4px_32px_rgba(28,28,28,0.08)] border border-[rgba(200,169,81,0.18)] h-full flex flex-col">
+              <div className="w-11 h-11 rounded-full bg-[#f5edce] flex items-center justify-center mb-5">
+                <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#C8A951" strokeWidth={1.8}><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z" /><circle cx="12" cy="10" r="3" /></svg>
+              </div>
+              <strong className="block text-[12px] tracking-[0.06em] uppercase text-[#7a7065] font-medium font-[Jost] mb-2">Address</strong>
+              <p className="text-[14px] leading-[1.7] text-[#1C1C1C] mb-5 flex-1">{salon.location}</p>
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(salon.location)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg bg-[#1C1C1C] text-[#C8A951] text-[13px] font-medium tracking-[0.07em] uppercase transition-all duration-300 hover:bg-[#2e2e2e] hover:-translate-y-0.5 hover:shadow-[0_4px_32px_rgba(28,28,28,0.08)] self-start"
+              >
+                <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M9 18l6-6-6-6" /></svg>
+                Get Directions
+              </a>
+            </div>
+          </Reveal>
+          <Reveal delay={150}>
+            <div className="rounded-[14px] overflow-hidden shadow-[0_4px_32px_rgba(28,28,28,0.08)] min-h-[240px]">
+              <iframe
+                src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14017.0!2d77.2090!3d28.6139!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s${encodeURIComponent(salon.location)}!5e0!3m2!1sen!2sin!4v1700000000000`}
+                className="w-full min-h-[240px] block border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+
+      {/* ═══════════════════════════════════════════
+          5. TIMINGS — dark section
+      ═══════════════════════════════════════════ */}
+      <section className="px-[6vw] py-14 bg-[#1C1C1C]" id="hours">
+        <Reveal>
+          <span className="block text-[11px] tracking-[0.2em] uppercase text-[#C8A951] font-medium mb-2">Opening Hours</span>
+          <h2 className="font-[Cormorant_Garamond,Georgia,serif] font-light text-white leading-[1.15] mb-2" style={{ fontSize: "clamp(22px,3vw,36px)" }}>
+            We're Here For You
+          </h2>
+          <div className="w-10 h-px bg-[#C8A951] mb-3" />
+          <p className="text-white/58 text-[13.5px] max-w-[480px] leading-[1.75] mb-8">
+            Visit us any day of the week. Our team is dedicated to serving you with the finest care.
+          </p>
+        </Reveal>
+
+        <Reveal delay={100}>
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-5 mb-10">
+            {detail.timings.map((t) => {
+              const isToday = t.day === today;
+              const isClosed = !t.open;
+              return (
+                <div
+                  key={t.day}
+                  className={`flex items-center justify-between rounded-[14px] px-5 py-3.5 border transition-colors ${isToday
+                      ? "bg-[rgba(200,169,81,0.12)] border-[#C8A951]"
+                      : "bg-white/5 border-white/10"
+                    } ${isClosed ? "opacity-55" : ""}`}
+                >
+                  <span className={`font-medium text-[14px] font-[Jost] ${isToday ? "text-[#C8A951]" : "text-white/85"}`}>{t.day}</span>
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-[14px] text-white/50">{isClosed ? "Closed" : `${t.open} – ${t.close}`}</span>
+                    {isToday && <span className="text-[10px] tracking-[0.1em] uppercase bg-[#C8A951] text-[#1C1C1C] px-2.5 py-1 rounded-full font-semibold">Today</span>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div>
+            <p className="text-[12px] tracking-[0.14em] uppercase text-[#C8A951] mb-3.5">Public Holidays — Closed</p>
+            {["Diwali", "Holi", "Republic Day", "Independence Day"].map((h) => (
+              <span key={h} className="inline-block bg-white/6 border border-white/10 text-white/50 rounded-full px-4 py-1.5 text-[13px] m-1">{h}</span>
+            ))}
+          </div>
+        </Reveal>
+      </section>
+
+
 
       {/* ═══════════════════════════════════════════
           7. STAFF / ARTISANS
