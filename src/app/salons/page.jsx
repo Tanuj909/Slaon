@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { salons, filters, badgeStyles } from "@/features/salons/data/salonsData";
 
-// ─── Star Icon ───────────────────────────────────────────────────────────────
+// ─── Star Icon ────────────────────────────────────────────────────────────────
 const StarIcon = ({ filled }) => (
   <svg width={13} height={13} viewBox="0 0 20 20" fill={filled ? "#c4956a" : "#e0d0c8"}>
     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -15,8 +16,10 @@ function SalonCard({ salon }) {
   const bc = salon.badge ? badgeStyles[salon.badge] : null;
 
   return (
-    <div className="group bg-white rounded-[20px] overflow-hidden border border-[#3c143212] cursor-pointer shadow-[0_2px_16px_rgba(60,20,50,0.06)]">
-
+    <Link
+      href={`/salons/${salon.slug}`}
+      className="group block bg-white rounded-[20px] overflow-hidden border border-[#3c143212] cursor-pointer shadow-[0_2px_16px_rgba(60,20,50,0.06)] no-underline"
+    >
       {/* ── Image ── */}
       <div className="relative h-[210px] overflow-hidden">
         <img
@@ -91,12 +94,13 @@ function SalonCard({ salon }) {
             </span>
           </div>
 
-          <button className="py-2 px-[18px] rounded-full border-[1.5px] border-[#3c14322e] bg-transparent text-[0.75rem] font-semibold text-[#3c1432] cursor-pointer tracking-[0.04em] font-[DM_Sans] transition-all duration-[220ms] hover:bg-gradient-to-br hover:from-[#3c1432] hover:to-[#7a2860] hover:border-transparent hover:text-[#fdf6f0] hover:shadow-[0_4px_16px_rgba(60,20,50,0.22)]">
+          {/* Book Now — acts as a visual button, click handled by the parent Link */}
+          <span className="py-2 px-[18px] rounded-full border-[1.5px] border-[#3c14322e] text-[0.75rem] font-semibold text-[#3c1432] tracking-[0.04em] font-[DM_Sans] transition-all duration-[220ms] group-hover:bg-gradient-to-br group-hover:from-[#3c1432] group-hover:to-[#7a2860] group-hover:border-transparent group-hover:text-[#fdf6f0] group-hover:shadow-[0_4px_16px_rgba(60,20,50,0.22)]">
             Book Now
-          </button>
+          </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { salons, badgeStyles } from "@/features/salons/data/salonsData";
 
 // Show only badged (top-rated) salons as recommendations — up to 4
@@ -38,7 +39,7 @@ export default function RecomendedSallon() {
           </div>
 
           {/* View All */}
-          <a
+          <Link
             href="/salons"
             className="flex items-center gap-2 py-[11px] px-6 rounded-full border-[1.5px] border-[#3c14322e] bg-white text-[0.8rem] font-semibold tracking-[0.04em] cursor-pointer transition-all duration-[220ms] text-[#3c1432] no-underline font-[DM_Sans] hover:bg-gradient-to-br hover:from-[#3c1432] hover:to-[#7a2860] hover:border-transparent hover:text-[#fdf6f0] hover:shadow-[0_6px_24px_rgba(60,20,50,0.22)]"
           >
@@ -47,7 +48,7 @@ export default function RecomendedSallon() {
               <line x1="5" y1="12" x2="19" y2="12" />
               <polyline points="12 5 19 12 12 19" />
             </svg>
-          </a>
+          </Link>
         </div>
 
         {/* Divider */}
@@ -58,9 +59,10 @@ export default function RecomendedSallon() {
           {recommendedSalons.map((salon) => {
             const bc = salon.badge ? badgeStyles[salon.badge] : null;
             return (
-              <div
+              <Link
                 key={salon.id}
-                className="group bg-white rounded-[20px] overflow-hidden border border-[#3c143212] cursor-pointer shadow-[0_2px_16px_rgba(60,20,50,0.06)]"
+                href={`/salons/${salon.slug}`}
+                className="group block bg-white rounded-[20px] overflow-hidden border border-[#3c143212] cursor-pointer shadow-[0_2px_16px_rgba(60,20,50,0.06)] no-underline"
               >
                 {/* Image */}
                 <div className="relative h-[200px] overflow-hidden">
@@ -135,12 +137,13 @@ export default function RecomendedSallon() {
                         ({salon.reviews})
                       </span>
                     </div>
-                    <button className="py-[7px] px-[16px] rounded-full border-[1.5px] border-[#3c14322e] bg-transparent text-[0.73rem] font-semibold text-[#3c1432] cursor-pointer tracking-[0.04em] font-[DM_Sans] transition-all duration-[220ms] hover:bg-gradient-to-br hover:from-[#3c1432] hover:to-[#7a2860] hover:border-transparent hover:text-[#fdf6f0] hover:shadow-[0_4px_16px_rgba(60,20,50,0.22)]">
+                    {/* Book Now — visual cue, click handled by parent Link */}
+                    <span className="py-[7px] px-[16px] rounded-full border-[1.5px] border-[#3c14322e] text-[0.73rem] font-semibold text-[#3c1432] tracking-[0.04em] font-[DM_Sans] transition-all duration-[220ms] group-hover:bg-gradient-to-br group-hover:from-[#3c1432] group-hover:to-[#7a2860] group-hover:border-transparent group-hover:text-[#fdf6f0] group-hover:shadow-[0_4px_16px_rgba(60,20,50,0.22)]">
                       Book Now
-                    </button>
+                    </span>
                   </div>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>

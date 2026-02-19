@@ -1,6 +1,7 @@
 export const salons = [
   {
     id: 1,
+    slug: "lumineux-studio",
     name: "Lumineux Studio",
     location: "Hauz Khas, New Delhi",
     category: "Hair · Skin · Bridal",
@@ -14,6 +15,7 @@ export const salons = [
   },
   {
     id: 2,
+    slug: "maison-blanche",
     name: "Maison Blanche",
     location: "Khan Market, New Delhi",
     category: "Nails · Facials · Waxing",
@@ -27,6 +29,7 @@ export const salons = [
   },
   {
     id: 3,
+    slug: "velvet-and-co",
     name: "Velvet & Co.",
     location: "Vasant Vihar, New Delhi",
     category: "Hair · Massage · Spa",
@@ -40,6 +43,7 @@ export const salons = [
   },
   {
     id: 4,
+    slug: "aurelia-beauty",
     name: "Aurelia Beauty",
     location: "Connaught Place, New Delhi",
     category: "Hair Color · Keratin · Cuts",
@@ -53,6 +57,7 @@ export const salons = [
   },
   {
     id: 5,
+    slug: "the-ritual-room",
     name: "The Ritual Room",
     location: "Lajpat Nagar, New Delhi",
     category: "Ayurvedic · Body Wrap · Facial",
@@ -66,6 +71,7 @@ export const salons = [
   },
   {
     id: 6,
+    slug: "plume-and-petal",
     name: "Plume & Petal",
     location: "Saket, New Delhi",
     category: "Lash · Brow · Skin",
@@ -79,6 +85,7 @@ export const salons = [
   },
   {
     id: 7,
+    slug: "studio-saffron",
     name: "Studio Saffron",
     location: "Greater Kailash, New Delhi",
     category: "Bridal · Makeup · Hair",
@@ -92,6 +99,7 @@ export const salons = [
   },
   {
     id: 8,
+    slug: "aura-and-co",
     name: "Aura & Co.",
     location: "Defence Colony, New Delhi",
     category: "Massage · Facial · Waxing",
@@ -105,6 +113,7 @@ export const salons = [
   },
   {
     id: 9,
+    slug: "gilded-leaf",
     name: "Gilded Leaf",
     location: "Mehrauli, New Delhi",
     category: "Hair · Nails · Spa",
@@ -121,9 +130,9 @@ export const salons = [
 export const filters = ["All", "Hair", "Skin", "Nails", "Bridal", "Spa", "Massage"];
 
 export const badgeStyles = {
-  "Top Rated":   { bg: "bg-[#9b58761f]",  text: "text-[#7a2860]", border: "border-[#9b587633]" },
-  "Editor's Pick": { bg: "bg-[#c4956a1f]", text: "text-[#a0622a]", border: "border-[#c4956a40]" },
-  "Most Booked": { bg: "bg-[#3c143217]",  text: "text-[#3c1432]", border: "border-[#3c143226]" },
-  "New":         { bg: "bg-[#50a0781a]",  text: "text-[#2a7a5a]", border: "border-[#50a07833]" },
-  "Luxury":      { bg: "bg-[#c4956a26]",  text: "text-[#8a5020]", border: "border-[#c4956a4d]" },
+  "Top Rated":     { bg: "bg-[#9b58761f]",  text: "text-[#7a2860]", border: "border-[#9b587633]" },
+  "Editor's Pick": { bg: "bg-[#c4956a1f]",  text: "text-[#a0622a]", border: "border-[#c4956a40]" },
+  "Most Booked":   { bg: "bg-[#3c143217]",  text: "text-[#3c1432]", border: "border-[#3c143226]" },
+  "New":           { bg: "bg-[#50a0781a]",  text: "text-[#2a7a5a]", border: "border-[#50a07833]" },
+  "Luxury":        { bg: "bg-[#c4956a26]",  text: "text-[#8a5020]", border: "border-[#c4956a4d]" },
 };
