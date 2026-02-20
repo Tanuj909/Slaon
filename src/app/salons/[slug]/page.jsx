@@ -5,7 +5,7 @@ import Link from "next/link";
 import { salons } from "@/features/salons/data/salonsData";
 import { getDetailOrDefault } from "@/features/salons/data/salonDetailData";
 
-// ─── Scroll-reveal hook ───────────────────────────────────────────────────────
+// ─── Custom Hooks ────────────────────────────────────────────────────────────
 function useReveal() {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
@@ -14,7 +14,7 @@ function useReveal() {
     if (!el) return;
     const obs = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.unobserve(el); } },
-      { threshold: 0.12 }
+      { threshold: 0.12, rootMargin: "0px 0px -50px 0px" }
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -22,13 +22,30 @@ function useReveal() {
   return { ref, visible };
 }
 
-// ─── Reveal wrapper ──────────────────────────────────────────────────────────
-function Reveal({ children, delay = 0, className = "" }) {
+function useParallax() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const handleScroll = () => {
+      if (ref.current) {
+        const scrollY = window.scrollY;
+        const element = ref.current;
+        const speed = 0.3;
+        element.style.transform = `translateY(${scrollY * speed}px)`;
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+  return ref;
+}
+
+// ─── Components ───────────────────────────────────────────────────────────────
+function Reveal({ children, delay = 0, className = "", threshold = 0.12 }) {
   const { ref, visible } = useReveal();
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"} ${className}`}
+      className={`transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}
@@ -36,7 +53,30 @@ function Reveal({ children, delay = 0, className = "" }) {
   );
 }
 
-// ─── Star renderer ────────────────────────────────────────────────────────────
+function SectionHeading({ subtitle, title, description, align = "left" }) {
+  const words = title.split(" ");
+  const lastWord = words.pop();
+  const mainTitle = words.join(" ");
+
+  return (
+    <div className={`mb-12 ${align === "center" ? "text-center mx-auto" : ""}`}>
+      <span className="block text-[10px] tracking-[0.4em] uppercase text-[#C8A951] font-semibold mb-4 opacity-90">
+        {subtitle}
+      </span>
+      <h2 className="font-[Cormorant_Garamond,Georgia,serif] font-light text-[#1C1C1C] leading-[1.1] mb-6"
+        style={{ fontSize: "clamp(36px,5vw,52px)" }}>
+        {mainTitle}{" "}
+        <em className="italic text-[#C8A951] block md:inline">{lastWord}</em>
+      </h2>
+      {description && (
+        <p className="text-[#7a7065] text-[15px] leading-relaxed font-light opacity-80">
+          {description}
+        </p>
+      )}
+    </div>
+  );
+}
+
 function Stars({ rating, size = 14 }) {
   return (
     <span className="text-[#C8A951]" style={{ fontSize: size, letterSpacing: 2 }}>
@@ -45,17 +85,47 @@ function Stars({ rating, size = 14 }) {
   );
 }
 
-// ─── Days of week ─────────────────────────────────────────────────────────────
+function StatCard({ number, label, icon, extra }) {
+  return (
+    <div className="flex items-center gap-3">
+      {icon && <div className="text-[#C8A951] text-xl">{icon}</div>}
+      <div>
+        <span className="block font-[Cormorant_Garamond,Georgia,serif] font-light text-3xl text-[#1C1C1C] leading-none">
+          {number}
+        </span>
+        <span className="text-xs tracking-wider uppercase text-[#7a7065]">{label}</span>
+        {extra && <div className="mt-1">{extra}</div>}
+      </div>
+    </div>
+  );
+}
+
+function Badge({ children, variant = "gold" }) {
+  const variants = {
+    gold: "bg-[#C8A951] text-[#1C1C1C]",
+    outline: "bg-transparent border border-[#C8A951] text-[#C8A951]",
+    glass: "backdrop-blur-md bg-white/10 text-white border border-white/20",
+    dark: "bg-[#1C1C1C] text-[#C8A951]"
+  };
+
+  return (
+    <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium tracking-wide ${variants[variant]}`}>
+      {children}
+    </span>
+  );
+}
+
+// ─── Constants ───────────────────────────────────────────────────────────────
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// ─── Main Page Component ─────────────────────────────────────────────────────
 export default function SalonDetails({ params }) {
   const { slug } = use(params);
   const salon = salons.find((s) => s.slug === slug);
-
-  // Lightbox
   const [lightboxSrc, setLightboxSrc] = useState(null);
+  const [activeTab, setActiveTab] = useState("services");
   const today = DAY_NAMES[new Date().getDay()];
+  const heroRef = useParallax();
 
   if (!salon) {
     return (
@@ -67,187 +137,292 @@ export default function SalonDetails({ params }) {
   }
 
   const detail = getDetailOrDefault(slug, salon);
-  const isOpen = true; // Could be computed from timings
+  const isOpen = true; // Implement actual logic
 
   return (
     <div className="min-h-screen bg-[#F7F3EE] font-[Jost,sans-serif] font-light">
 
       {/* ═══════════════════════════════════════════
-          1. HERO
+          HERO SECTION
       ═══════════════════════════════════════════ */}
-      <section className="relative h-[60vh] min-h-[420px] overflow-hidden flex items-end">
-        {/* Image */}
-        <img
-          src={salon.image}
-          alt={salon.name}
-          className="absolute inset-0 w-full h-full object-cover scale-[1.04] animate-[heroZoom_8s_ease-out_forwards]"
-        />
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[rgba(28,28,28,0.82)] via-[rgba(28,28,28,0.38)] to-transparent" />
+      <section className="relative h-[65vh] min-h-[500px] overflow-hidden">
+        {/* Parallax Background */}
+        <div ref={heroRef} className="absolute inset-0">
+          <img
+            src={salon.image}
+            alt={salon.name}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1C1C1C] via-[#1C1C1C]/40 to-transparent" />
+        </div>
 
-        {/* Back link */}
-        <Link
-          href="/salons"
-          className="absolute top-6 left-8 flex items-center gap-2 text-white/70 text-[0.82rem] font-medium no-underline hover:text-white transition-colors z-10"
-        >
-          <svg width={16} height={16} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-            <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
-          </svg>
-          All Salons
-        </Link>
+        {/* Navigation */}
+        <nav className="absolute top-0 left-0 right-0 z-20 px-8 py-6 flex justify-end items-center">
+          <div className="flex gap-2">
+            <button className="p-2 text-white/80 hover:text-white transition-colors">
+              <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </button>
+            <button className="p-2 text-white/80 hover:text-white transition-colors">
+              <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path d="M4 4v16h16" />
+              </svg>
+            </button>
+          </div>
+        </nav>
 
         {/* Hero Content */}
-        <div className="relative z-10 w-full px-[6vw] pb-10 animate-[fadeUp_1.1s_0.3s_both]">
-          {/* Badges */}
-          <div className="flex gap-2 flex-wrap mb-3">
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11.5px] tracking-[0.06em] font-medium uppercase bg-[#C8A951] text-[#1C1C1C]">
-              <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}><path d="M9 12l2 2 4-4" /><circle cx="12" cy="12" r="10" /></svg>
-              Verified Salon
-            </span>
-            <span className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11.5px] tracking-[0.06em] font-medium uppercase backdrop-blur-md border ${isOpen ? "bg-white/15 text-[#a3e8a3] border-[rgba(163,232,163,0.3)]" : "bg-white/15 text-[#f0a0a0] border-[rgba(240,160,160,0.3)]"}`}>
-              <svg width={10} height={10} viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5" /></svg>
-              {isOpen ? "Open Now" : "Closed"}
-            </span>
-            {salon.badge && (
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11.5px] tracking-[0.06em] font-medium uppercase bg-[rgba(200,169,81,0.18)] text-[#C8A951] border border-[#C8A951]">
-                {salon.badge}
-              </span>
-            )}
-          </div>
-
-          {/* Title */}
-          <h1 className="font-[Cormorant_Garamond,Georgia,serif] font-light text-white leading-[1.05] tracking-[-0.01em] mb-3" style={{ fontSize: "clamp(32px,5vw,60px)" }}>
-            {salon.name.includes(" ") ? (
-              <>
-                {salon.name.split(" ").slice(0, -1).join(" ")}<br />
-                <em className="italic text-[#C8A951]">{salon.name.split(" ").slice(-1)[0]}</em>
-              </>
-            ) : (
-              <em className="italic text-[#C8A951]">{salon.name}</em>
-            )}
-          </h1>
-
-          <p className="text-[13px] text-white/72 max-w-[480px] mb-3 font-light">
-            {detail.about.split(".")[0]}.
-          </p>
-
-          {/* Rating */}
-          <div className="flex items-center gap-2.5 mb-5">
-            <Stars rating={salon.rating} size={16} />
-            <span className="text-white/80 text-[13.5px]">{salon.rating} · {salon.reviews} reviews</span>
-          </div>
-
-          {/* Actions */}
-          <div className="flex gap-3.5 flex-wrap">
-            <a
-              href="#services"
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg bg-[#C8A951] text-[#1C1C1C] text-[13px] font-medium tracking-[0.07em] uppercase transition-all duration-300 hover:bg-[#e0c477] hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(200,169,81,0.35)]"
-            >
-              <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}><rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
-              Book Appointment
-            </a>
-            <a
-              href="#services"
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg text-[13px] font-medium tracking-[0.07em] uppercase text-white border border-white/45 backdrop-blur-md transition-all duration-300 hover:bg-white/12 hover:border-white/80 hover:-translate-y-0.5"
-            >
-              View Services
-            </a>
-          </div>
-        </div>
-      </section>
-
-
-      {/* ═══════════════════════════════════════════
-          2. ABOUT / OVERVIEW
-      ═══════════════════════════════════════════ */}
-      <section className="px-[6vw] py-14" id="about">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-          {/* Images */}
-          <Reveal>
-            <div className="grid grid-cols-2 gap-2.5">
-              <div className="rounded-[14px] overflow-hidden aspect-[4/5] shadow-[0_4px_32px_rgba(28,28,28,0.08)] transition-transform duration-[400ms] hover:scale-[1.02] mt-8">
-                <img src={salon.image} alt={salon.name} className="w-full h-full object-cover" />
+        <div className="absolute bottom-0 left-0 right-0 z-10 px-8 md:px-16 pb-16 md:pb-24">
+          <div className="max-w-4xl">
+            {/* Badges */}
+            <Reveal delay={200}>
+              <div className="flex gap-3 flex-wrap mb-6">
+                <Badge variant="glass">
+                  <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                    <path d="M9 12l2 2 4-4" />
+                    <circle cx="12" cy="12" r="10" />
+                  </svg>
+                  Verified
+                </Badge>
+                <Badge variant="glass">
+                  <svg width={14} height={14} viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="12" cy="12" r="5" />
+                  </svg>
+                  {isOpen ? "Open Now" : "Closed"}
+                </Badge>
+                {salon.badge && (
+                  <Badge variant="outline">
+                    {salon.badge}
+                  </Badge>
+                )}
               </div>
-              <div className="rounded-[14px] overflow-hidden aspect-[4/5] shadow-[0_4px_32px_rgba(28,28,28,0.08)] transition-transform duration-[400ms] hover:scale-[1.02]">
-                <img src={detail.gallery[1] || salon.image} alt={salon.name} className="w-full h-full object-cover" />
-              </div>
-            </div>
-          </Reveal>
+            </Reveal>
 
-          {/* Text */}
-          <Reveal delay={150}>
-            <span className="block text-[11px] tracking-[0.2em] uppercase text-[#C8A951] font-medium mb-2.5">About Us</span>
-            <h2 className="font-[Cormorant_Garamond,Georgia,serif] font-light text-[#1C1C1C] leading-[1.15] mb-3" style={{ fontSize: "clamp(22px,3vw,36px)" }}>
-              An Experience<br /><em className="italic">Beyond Beauty</em>
-            </h2>
-            <div className="w-12 h-px bg-[#C8A951] mb-5" />
-            <p className="text-[#7a7065] text-[13.5px] leading-[1.75] max-w-[540px] mb-5">
-              {detail.about}
-            </p>
+            {/* Title */}
+            <Reveal delay={300}>
+              <h1 className="font-[Cormorant_Garamond,Georgia,serif] font-light text-white leading-[1.1] mb-4"
+                style={{ fontSize: "clamp(48px,8vw,96px)" }}>
+                {salon.name.split(" ").map((word, i, arr) =>
+                  i === arr.length - 1 ? (
+                    <em key={i} className="italic text-[#C8A951] block md:inline">{word}</em>
+                  ) : (
+                    <span key={i} className="block md:inline">{word} </span>
+                  )
+                )}
+              </h1>
+            </Reveal>
 
-            {/* Stats */}
-            <div className="flex gap-5 flex-wrap mb-5">
-              {[
-                { num: salon.rating, label: "Avg Rating", extra: <Stars rating={salon.rating} size={12} /> },
-                { num: salon.reviews, label: "Reviews" },
-                { num: "10+", label: "Years" },
-                { num: detail.staff.length * 3, label: "Experts" },
-              ].map((s) => (
-                <div key={s.label} className="text-center">
-                  <span className="block font-[Cormorant_Garamond,Georgia,serif] font-light text-[26px] text-[#1C1C1C] leading-none">{s.num}</span>
-                  {s.extra && <div className="my-0.5">{s.extra}</div>}
-                  <div className="text-[11px] tracking-[0.1em] uppercase text-[#7a7065] mt-1">{s.label}</div>
+            {/* Rating & Quick Info */}
+            <Reveal delay={400}>
+              <div className="flex items-center gap-6 flex-wrap mb-8">
+                <div className="flex items-center gap-3">
+                  <Stars rating={salon.rating} size={20} />
+                  <span className="text-white/80 text-sm">{salon.rating} · {salon.reviews} reviews</span>
                 </div>
-              ))}
+                <div className="flex items-center gap-2 text-white/60 text-sm">
+                  <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+                    <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  <span>{salon.location.split(',')[0]}</span>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* CTA Buttons */}
+            <Reveal delay={500}>
+              <div className="flex gap-4 flex-wrap">
+                <a
+                  href="#booking"
+                  className="group inline-flex items-center gap-3 px-8 py-4 rounded-lg bg-[#C8A951] text-[#1C1C1C] text-sm font-medium tracking-wider uppercase transition-all duration-300 hover:bg-[#d4b55f] hover:shadow-[0_10px_30px_-5px_rgba(200,169,81,0.5)]"
+                >
+                  <span>Book Appointment</span>
+                  <svg className="group-hover:translate-x-1 transition-transform" width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </a>
+                <a
+                  href="#services"
+                  className="inline-flex items-center px-8 py-4 rounded-lg text-sm font-medium tracking-wider uppercase text-white border border-white/30 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:border-white/50"
+                >
+                  View Services
+                </a>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+          <div className="w-[2px] h-16 bg-white/30 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1/3 bg-white animate-[scroll_2s_ease-in-out_infinite]" />
+          </div>
+        </div>
+      </section>
+
+
+      {/* ═══════════════════════════════════════════
+          ABOUT SECTION
+      ═══════════════════════════════════════════ */}
+      <section className="py-12 px-8 max-w-7xl mx-auto" id="about">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          {/* Image Grid */}
+          <Reveal>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-4">
+                <div className="rounded-2xl overflow-hidden aspect-[3/4]">
+                  <img
+                    src={salon.image}
+                    alt={salon.name}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                  />
+                </div>
+                <div className="rounded-2xl overflow-hidden aspect-[4/3]">
+                  <img
+                    src={detail.gallery[2] || salon.image}
+                    alt={salon.name}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                  />
+                </div>
+              </div>
+              <div className="space-y-4 mt-8">
+                <div className="rounded-2xl overflow-hidden aspect-[3/4]">
+                  <img
+                    src={detail.gallery[0] || salon.image}
+                    alt={salon.name}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                  />
+                </div>
+              </div>
+            </div>
+          </Reveal>
+
+          {/* About Content */}
+          <Reveal delay={150}>
+            <SectionHeading
+              subtitle="Our Story"
+              title="Where Craft Meets Elegance"
+              description={detail.about}
+            />
+
+            <div className="grid grid-cols-2 gap-6 mb-8">
+              <StatCard
+                number={salon.rating}
+                label="Rating"
+                icon="★"
+                extra={<Stars rating={salon.rating} size={12} />}
+              />
+              <StatCard number={salon.reviews} label="Reviews" icon="🗣️" />
+              <StatCard number="10+" label="Years Experience" icon="⏳" />
+              <StatCard number={detail.staff.length} label="Expert Stylists" icon="✂️" />
             </div>
 
-            {/* Verified badge */}
-            <span className="inline-flex items-center gap-2 bg-[#f5edce] border border-[#C8A951] px-[18px] py-2 rounded-full text-[12px] text-[#8a6e1a] font-medium tracking-[0.05em]">
-              <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#C8A951" strokeWidth={2}><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <Badge variant="gold">
+              <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
               Verified & Certified Business
-            </span>
+            </Badge>
           </Reveal>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════
-          6. SERVICES
+          SERVICES SECTION
       ═══════════════════════════════════════════ */}
-      <section className="px-[6vw] py-14 bg-[#FDFAF6]" id="services">
-        <Reveal>
-          <div className="flex items-end justify-between flex-wrap gap-4 mb-8">
-            <div>
-              <span className="block text-[11px] tracking-[0.2em] uppercase text-[#C8A951] font-medium mb-2">Our Expertise</span>
-              <h2 className="font-[Cormorant_Garamond,Georgia,serif] font-light text-[#1C1C1C] leading-[1.15]" style={{ fontSize: "clamp(22px,3vw,36px)" }}>
-                Signature Services
-              </h2>
-            </div>
+      <section className="py-20 bg-[#FDFAF6]" id="services">
+        <div className="max-w-7xl mx-auto px-8">
+          <Reveal>
+            <SectionHeading
+              subtitle="Our Expertise"
+              title="Signature Services"
+              description="Experience the finest in beauty and wellness with our curated selection of premium services."
+              align="center"
+            />
+          </Reveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {detail.services.map((service, i) => (
+              <Reveal key={service.name} delay={i * 100}>
+                <div className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+                  {/* Decorative corner */}
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-[#C8A951]/5 rounded-bl-[100%] group-hover:bg-[#C8A951]/10 transition-colors" />
+
+                  <h3 className="font-[Cormorant_Garamond,Georgia,serif] text-2xl text-[#1C1C1C] mb-3">
+                    {service.name}
+                  </h3>
+
+                  <p className="text-[#7a7065] text-sm leading-relaxed mb-4">
+                    {service.desc}
+                  </p>
+
+                  <div className="flex items-center justify-between mb-6">
+                    <span className="font-[Cormorant_Garamond,Georgia,serif] text-2xl text-[#1C1C1C]">
+                      {service.price}
+                      <span className="text-xs text-[#7a7065] ml-1">starting</span>
+                    </span>
+                    {service.duration && (
+                      <span className="flex items-center gap-1 text-xs text-[#9e9287]">
+                        <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+                          <circle cx="12" cy="12" r="10" />
+                          <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                        {service.duration}
+                      </span>
+                    )}
+                  </div>
+
+                  <button className="w-full py-3 rounded-lg bg-[#1C1C1C] text-[#C8A951] text-sm font-medium tracking-wider uppercase transition-all duration-300 hover:bg-[#2a2a2a] hover:shadow-lg group-hover:shadow-[#C8A951]/20">
+                    Book Now
+                  </button>
+                </div>
+              </Reveal>
+            ))}
           </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════
+          TEAM SECTION
+      ═══════════════════════════════════════════ */}
+      <section className="py-20 px-8 max-w-7xl mx-auto" id="team">
+        <Reveal>
+          <SectionHeading
+            subtitle="Meet The Team"
+            title="Our Artisans"
+            description="Each member brings unique expertise and passion to create your perfect experience."
+          />
         </Reveal>
 
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-6">
-          {detail.services.map((s, i) => (
-            <Reveal key={s.name} delay={(i % 3) * 100}>
-              <div className="group relative bg-[#FDFAF6] rounded-[14px] p-5 border border-[rgba(200,169,81,0.18)] shadow-[0_4px_32px_rgba(28,28,28,0.08)] flex flex-col gap-2.5 overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_8px_48px_rgba(28,28,28,0.12)] hover:border-[#C8A951] h-full">
-                {/* Gold top bar on hover */}
-                <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#C8A951] scale-x-0 group-hover:scale-x-100 transition-transform duration-350 origin-left" />
-                <h3 className="font-[Cormorant_Garamond,Georgia,serif] font-light text-[18px] text-[#1C1C1C]">{s.name}</h3>
-                <p className="text-[12.5px] text-[#7a7065] leading-[1.65] flex-1">{s.desc}</p>
-                <div className="flex items-center gap-3 flex-wrap">
-                  <span className="font-[Cormorant_Garamond,Georgia,serif] font-medium text-[19px] text-[#1C1C1C]">
-                    {s.price}
-                    <span className="text-[12px] font-[Jost] text-[#7a7065] font-light"> starting</span>
-                  </span>
-                  {s.duration && (
-                    <span className="flex items-center gap-1.5 text-[12px] text-[#9e9287]">
-                      <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
-                      {s.duration}
-                    </span>
-                  )}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {detail.staff.map((member, i) => (
+            <Reveal key={member.name} delay={i * 50}>
+              <div className="group text-center">
+                <div className="relative mb-4">
+                  <div className="w-32 h-32 mx-auto rounded-full bg-[#EDE8E0] border-4 border-white shadow-lg overflow-hidden">
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span className="font-[Cormorant_Garamond,Georgia,serif] text-3xl text-[#C8A951]">
+                        {member.initials}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="absolute inset-0 rounded-full bg-[#C8A951]/0 group-hover:bg-[#C8A951]/20 transition-colors" />
                 </div>
-                <button className="self-start mt-1 px-[22px] py-2.5 rounded-lg bg-[#1C1C1C] text-[#C8A951] text-[11.5px] font-medium tracking-[0.07em] uppercase transition-all duration-300 hover:bg-[#2e2e2e] hover:shadow-[0_4px_32px_rgba(28,28,28,0.08)]">
-                  Book
-                </button>
+
+                <h3 className="font-[Cormorant_Garamond,Georgia,serif] text-lg text-[#1C1C1C] mb-1">
+                  {member.name}
+                </h3>
+
+                <p className="text-xs tracking-wider uppercase text-[#7a7065] mb-2">
+                  {member.role}
+                </p>
+
+                <div className="flex items-center justify-center gap-2">
+                  <Stars rating={member.rating} size={12} />
+                  <span className="text-xs text-[#7a7065]">{member.rating.toFixed(1)}</span>
+                </div>
               </div>
             </Reveal>
           ))}
@@ -255,39 +430,115 @@ export default function SalonDetails({ params }) {
       </section>
 
       {/* ═══════════════════════════════════════════
-          3. LOCATION
+          GALLERY SECTION
       ═══════════════════════════════════════════ */}
-      <section className="px-[6vw] py-14 bg-[#FDFAF6]" id="location">
-        <Reveal>
-          <span className="block text-[11px] tracking-[0.2em] uppercase text-[#C8A951] font-medium mb-2">Find Us</span>
-          <h2 className="font-[Cormorant_Garamond,Georgia,serif] font-light text-[#1C1C1C] leading-[1.15] mb-8" style={{ fontSize: "clamp(22px,3vw,36px)" }}>
-            Our Location
-          </h2>
-        </Reveal>
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-8">
+      <section className="py-20 bg-[#FDFAF6]" id="gallery">
+        <div className="max-w-7xl mx-auto px-8">
           <Reveal>
-            <div className="bg-[#FDFAF6] rounded-[14px] p-7 shadow-[0_4px_32px_rgba(28,28,28,0.08)] border border-[rgba(200,169,81,0.18)] h-full flex flex-col">
-              <div className="w-11 h-11 rounded-full bg-[#f5edce] flex items-center justify-center mb-5">
-                <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#C8A951" strokeWidth={1.8}><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z" /><circle cx="12" cy="10" r="3" /></svg>
+            <SectionHeading
+              subtitle="Portfolio"
+              title="Our Work"
+              description="A glimpse into the transformations that define our artistry."
+              align="center"
+            />
+          </Reveal>
+
+          <Reveal delay={100}>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {detail.gallery.slice(0, 8).map((url, i) => (
+                <div
+                  key={i}
+                  className={`group relative rounded-xl overflow-hidden cursor-pointer aspect-square ${i === 0 ? "md:col-span-2 md:row-span-2" : ""
+                    }`}
+                  onClick={() => setLightboxSrc(url)}
+                >
+                  <img
+                    src={url}
+                    alt={`Gallery ${i + 1}`}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center">
+                    <span className="text-white text-3xl opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:scale-100 scale-0">
+                      ⊕
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════
+          LOCATION & HOURS
+      ═══════════════════════════════════════════ */}
+      <section className="py-20 px-8 max-w-7xl mx-auto" id="location">
+        <div className="grid lg:grid-cols-2 gap-12">
+          {/* Location Info */}
+          <Reveal>
+            <SectionHeading
+              subtitle="Visit Us"
+              title="Find Your Sanctuary"
+            />
+
+            <div className="space-y-6">
+              <div className="flex gap-4">
+                <div className="w-12 h-12 rounded-full bg-[#f5edce] flex items-center justify-center flex-shrink-0">
+                  <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#C8A951" strokeWidth={1.8}>
+                    <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium uppercase tracking-wider text-[#7a7065] mb-1">Address</h4>
+                  <p className="text-lg text-[#1C1C1C]">{salon.location}</p>
+                </div>
               </div>
-              <strong className="block text-[12px] tracking-[0.06em] uppercase text-[#7a7065] font-medium font-[Jost] mb-2">Address</strong>
-              <p className="text-[14px] leading-[1.7] text-[#1C1C1C] mb-5 flex-1">{salon.location}</p>
+
+              <div className="flex gap-4">
+                <div className="w-12 h-12 rounded-full bg-[#f5edce] flex items-center justify-center flex-shrink-0">
+                  <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#C8A951" strokeWidth={1.8}>
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium uppercase tracking-wider text-[#7a7065] mb-1">Hours</h4>
+                  <div className="space-y-2">
+                    {detail.timings.map((t) => (
+                      <div key={t.day} className="flex items-center justify-between gap-8">
+                        <span className={`text-sm ${t.day === today ? "text-[#C8A951] font-medium" : "text-[#7a7065]"}`}>
+                          {t.day}
+                        </span>
+                        <span className="text-sm text-[#1C1C1C]">
+                          {t.open ? `${t.open} - ${t.close}` : "Closed"}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
               <a
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(salon.location)}`}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg bg-[#1C1C1C] text-[#C8A951] text-[13px] font-medium tracking-[0.07em] uppercase transition-all duration-300 hover:bg-[#2e2e2e] hover:-translate-y-0.5 hover:shadow-[0_4px_32px_rgba(28,28,28,0.08)] self-start"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gray-200 text-gray-300 text-sm font-medium tracking-wider uppercase transition-all duration-300 hover:bg-gray-400 hover:shadow-lg mt-4"
               >
-                <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M9 18l6-6-6-6" /></svg>
                 Get Directions
+                <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
               </a>
             </div>
           </Reveal>
+
+          {/* Map */}
           <Reveal delay={150}>
-            <div className="rounded-[14px] overflow-hidden shadow-[0_4px_32px_rgba(28,28,28,0.08)] min-h-[240px]">
+            <div className="rounded-2xl overflow-hidden shadow-2xl h-full min-h-[400px]">
               <iframe
                 src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14017.0!2d77.2090!3d28.6139!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s${encodeURIComponent(salon.location)}!5e0!3m2!1sen!2sin!4v1700000000000`}
-                className="w-full min-h-[240px] block border-0"
+                className="w-full h-full border-0"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
@@ -296,120 +547,31 @@ export default function SalonDetails({ params }) {
         </div>
       </section>
 
-
       {/* ═══════════════════════════════════════════
-          5. TIMINGS — dark section
+          BOOKING CTA
       ═══════════════════════════════════════════ */}
-      <section className="px-[6vw] py-14 bg-[#1C1C1C]" id="hours">
-        <Reveal>
-          <span className="block text-[11px] tracking-[0.2em] uppercase text-[#C8A951] font-medium mb-2">Opening Hours</span>
-          <h2 className="font-[Cormorant_Garamond,Georgia,serif] font-light text-white leading-[1.15] mb-2" style={{ fontSize: "clamp(22px,3vw,36px)" }}>
-            We're Here For You
-          </h2>
-          <div className="w-10 h-px bg-[#C8A951] mb-3" />
-          <p className="text-white/58 text-[13.5px] max-w-[480px] leading-[1.75] mb-8">
-            Visit us any day of the week. Our team is dedicated to serving you with the finest care.
-          </p>
-        </Reveal>
-
-        <Reveal delay={100}>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-5 mb-10">
-            {detail.timings.map((t) => {
-              const isToday = t.day === today;
-              const isClosed = !t.open;
-              return (
-                <div
-                  key={t.day}
-                  className={`flex items-center justify-between rounded-[14px] px-5 py-3.5 border transition-colors ${isToday
-                      ? "bg-[rgba(200,169,81,0.12)] border-[#C8A951]"
-                      : "bg-white/5 border-white/10"
-                    } ${isClosed ? "opacity-55" : ""}`}
-                >
-                  <span className={`font-medium text-[14px] font-[Jost] ${isToday ? "text-[#C8A951]" : "text-white/85"}`}>{t.day}</span>
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-[14px] text-white/50">{isClosed ? "Closed" : `${t.open} – ${t.close}`}</span>
-                    {isToday && <span className="text-[10px] tracking-[0.1em] uppercase bg-[#C8A951] text-[#1C1C1C] px-2.5 py-1 rounded-full font-semibold">Today</span>}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div>
-            <p className="text-[12px] tracking-[0.14em] uppercase text-[#C8A951] mb-3.5">Public Holidays — Closed</p>
-            {["Diwali", "Holi", "Republic Day", "Independence Day"].map((h) => (
-              <span key={h} className="inline-block bg-white/6 border border-white/10 text-white/50 rounded-full px-4 py-1.5 text-[13px] m-1">{h}</span>
-            ))}
-          </div>
-        </Reveal>
-      </section>
-
-
-
-      {/* ═══════════════════════════════════════════
-          7. STAFF / ARTISANS
-      ═══════════════════════════════════════════ */}
-      <section className="px-[6vw] py-14" id="team">
-        <Reveal>
-          <span className="block text-[11px] tracking-[0.2em] uppercase text-[#C8A951] font-medium mb-2">Meet The Team</span>
-          <h2 className="font-[Cormorant_Garamond,Georgia,serif] font-light text-[#1C1C1C] leading-[1.15] mb-2" style={{ fontSize: "clamp(22px,3vw,36px)" }}>
-            Our Artisans
-          </h2>
-          <div className="w-10 h-px bg-[#C8A951] mb-3" />
-          <p className="text-[#7a7065] text-[13.5px] max-w-[480px] leading-[1.75] mb-8">
-            Each member of our team brings a unique mastery and passion that sets {salon.name} apart.
-          </p>
-        </Reveal>
-
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-7">
-          {detail.staff.map((m, i) => (
-            <Reveal key={m.name} delay={(i % 2) * 100}>
-              <div className="bg-[#FDFAF6] rounded-[14px] p-5 text-center border border-[rgba(200,169,81,0.18)] shadow-[0_4px_32px_rgba(28,28,28,0.08)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_8px_48px_rgba(28,28,28,0.12)]">
-                {/* Avatar */}
-                <div className="w-[68px] h-[68px] rounded-full mx-auto mb-3 border-[3px] border-[#EDE8E0] shadow-[0_4px_16px_rgba(28,28,28,0.12)] bg-[#EDE8E0] flex items-center justify-center">
-                  <span className="font-[Cormorant_Garamond,Georgia,serif] font-light text-[22px] text-[#C8A951]">{m.initials}</span>
-                </div>
-                <h3 className="font-[Cormorant_Garamond,Georgia,serif] font-light text-[16px] text-[#1C1C1C] mb-1">{m.name}</h3>
-                <p className="text-[12px] tracking-[0.1em] uppercase text-[#7a7065] mb-3">{m.role}</p>
-                <div className="flex items-center justify-center gap-1.5">
-                  <Stars rating={m.rating} size={13} />
-                  <span className="text-[13px] text-[#7a7065]">{m.rating.toFixed(1)}</span>
-                </div>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════
-          8. GALLERY
-      ═══════════════════════════════════════════ */}
-      <section className="px-[6vw] py-14 bg-[#FDFAF6]" id="gallery">
-        <Reveal>
-          <span className="block text-[11px] tracking-[0.2em] uppercase text-[#C8A951] font-medium mb-2">Portfolio</span>
-          <h2 className="font-[Cormorant_Garamond,Georgia,serif] font-light text-[#1C1C1C] leading-[1.15] mb-2" style={{ fontSize: "clamp(22px,3vw,36px)" }}>Gallery</h2>
-          <div className="w-10 h-px bg-[#C8A951] mb-3" />
-          <p className="text-[#7a7065] text-[13.5px] max-w-[480px] leading-[1.75] mb-8">
-            A glimpse into the transformations that define {salon.name}.
-          </p>
-        </Reveal>
-
-        <Reveal delay={100}>
-          <div className="columns-[3_280px] gap-3.5">
-            {detail.gallery.map((url, i) => (
-              <div
-                key={i}
-                className="group relative break-inside-avoid mb-3.5 rounded-[14px] overflow-hidden cursor-pointer shadow-[0_4px_32px_rgba(28,28,28,0.08)]"
-                onClick={() => setLightboxSrc(url)}
+      <section className="py-20 bg-[#1C1C1C] text-center" id="booking">
+        <div className="max-w-3xl mx-auto px-8">
+          <Reveal>
+            <span className="block text-xs tracking-[0.3em] uppercase text-[#C8A951] font-medium mb-4">
+              Ready to Transform?
+            </span>
+            <h2 className="font-[Cormorant_Garamond,Georgia,serif] font-light text-white text-5xl md:text-6xl mb-6">
+              Book Your <em className="italic text-[#C8A951]">Experience</em>
+            </h2>
+            <p className="text-white/60 text-lg mb-10 font-light">
+              Join us for a journey of beauty and relaxation. Our team is ready to welcome you.
+            </p>
+            <div className="flex gap-4 justify-center mt-5">
+              <a
+                href="#"
+                className="px-10 py-4 rounded-lg bg-[#C8A951] text-[#1C1C1C] text-sm font-medium tracking-wider uppercase transition-all duration-300 hover:bg-[#d4b55f] hover:shadow-[0_10px_30px_-5px_rgba(200,169,81,0.5)]"
               >
-                <img src={url} alt={`Gallery ${i + 1}`} className="w-full h-auto block transition-transform duration-500 group-hover:scale-[1.04]" loading="lazy" />
-                <div className="absolute inset-0 bg-[rgba(28,28,28,0)] group-hover:bg-[rgba(28,28,28,0.25)] transition-colors duration-300 flex items-center justify-center">
-                  <span className="text-white text-[28px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 scale-0 group-hover:scale-100 transition-transform">⊕</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Reveal>
+                Book Appointment
+              </a>
+            </div>
+          </Reveal>
+        </div>
       </section>
 
       {/* ═══════════════════════════════════════════
@@ -417,11 +579,11 @@ export default function SalonDetails({ params }) {
       ═══════════════════════════════════════════ */}
       {lightboxSrc && (
         <div
-          className="fixed inset-0 bg-[rgba(10,10,10,0.95)] z-[9999] flex items-center justify-center transition-opacity duration-350"
+          className="fixed inset-0 bg-black/95 z-[9999] flex items-center justify-center"
           onClick={() => setLightboxSrc(null)}
         >
           <button
-            className="absolute top-6 right-7 text-white/60 text-[32px] bg-transparent border-none cursor-pointer hover:text-white transition-colors"
+            className="absolute top-6 right-6 text-white/60 hover:text-white text-4xl transition-colors"
             onClick={() => setLightboxSrc(null)}
           >
             ✕
@@ -429,17 +591,25 @@ export default function SalonDetails({ params }) {
           <img
             src={lightboxSrc}
             alt="Gallery"
-            className="max-w-[92vw] max-h-[88vh] rounded-[14px] shadow-[0_32px_80px_rgba(0,0,0,0.6)]"
+            className="max-w-[90vw] max-h-[90vh] rounded-2xl shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           />
         </div>
       )}
 
-      {/* Keyframes via global style */}
-      <style>{`
-        @keyframes heroZoom { to { transform: scale(1); } }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap');
+      {/* Global Styles */}
+      <style jsx>{`
+        @keyframes scroll {
+          0% { transform: translateY(-100%); }
+          100% { transform: translateY(300%); }
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
       `}</style>
     </div>
   );
